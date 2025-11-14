@@ -18,19 +18,19 @@ const Footer = () => {
           <div className="footer-section">
             <h4 className="footer-title">Services</h4>
             <ul className="footer-links">
-              <li><a href="feature1.html">Digital Banking</a></li>
-              <li><a href="feature2.html">Investment Services</a></li>
-              <li><a href="feature3.html">Business Banking</a></li>
-              <li><a href="feature4.html">Security & Protection</a></li>
+              <li><span className="clickable">Digital Banking</span></li>
+              <li><span className="clickable">Investment Services</span></li>
+              <li><span className="clickable">Business Banking</span></li>
+              <li><span className="clickable">Security & Protection</span></li>
             </ul>
           </div>
           <div className="footer-section">
             <h4 className="footer-title">Company</h4>
             <ul className="footer-links">
-              <li><a href="#about">About Us</a></li>
-              <li><a href="#contact">Contact</a></li>
-              <li><a href="#careers">Careers</a></li>
-              <li><a href="#news">News</a></li>
+              <li><span className="clickable">About Us</span></li>
+              <li><span className="clickable">Contact</span></li>
+              <li><span className="clickable">Careers</span></li>
+              <li><span className="clickable">News</span></li>
             </ul>
           </div>
           <div className="footer-section">
@@ -45,9 +45,9 @@ const Footer = () => {
         <div className="footer-bottom">
           <p>&copy; 2024 Premier Bank. All rights reserved.</p>
           <div className="footer-legal">
-            <a href="#privacy">Privacy Policy</a>
-            <a href="#terms">Terms of Service</a>
-            <a href="#security">Security</a>
+            <span className="clickable">Privacy Policy</span>
+            <span className="clickable">Terms of Service</span>
+            <span className="clickable">Security</span>
           </div>
         </div>
       </div>

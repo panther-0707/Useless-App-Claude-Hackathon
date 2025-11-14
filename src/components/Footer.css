@@ -61,6 +61,17 @@
   color: white;
 }
 
+.footer-links .clickable {
+  color: #999;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.footer-links .clickable:hover {
+  color: white;
+}
+
 .footer-contact {
   list-style: none;
   display: flex;
@@ -98,6 +109,17 @@
 }
 
 .footer-legal a:hover {
+  color: white;
+}
+
+.footer-legal .clickable {
+  color: #999;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.footer-legal .clickable:hover {
   color: white;
 }
 

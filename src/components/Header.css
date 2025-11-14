@@ -27,6 +27,13 @@
   font-size: 24px;
   font-weight: 700;
   color: #1a4d8c;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.logo:hover {
+  opacity: 0.8;
 }
 
 .logo-icon {
