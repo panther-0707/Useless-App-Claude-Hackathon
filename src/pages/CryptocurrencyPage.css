@@ -1,0 +1,50 @@
+.cryptocurrency-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.crypto-hero {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  text-align: center;
+  padding: 80px 20px 40px;
+}
+
+.crypto-hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.crypto-hero p {
+  font-size: 1.4rem;
+  opacity: 0.95;
+}
+
+.crypto-content {
+  padding: 80px 20px;
+  text-align: center;
+  min-height: 400px;
+}
+
+.crypto-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #f39c12;
+}
+
+.crypto-content p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .crypto-hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .crypto-hero p {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Typing Challenge - Python Edition</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #764ba2;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .mode-selection {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            padding: 12px 24px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .mode-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .custom-time {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .custom-time input {
+            padding: 8px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            width: 100px;
+            font-size: 16px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .game-area {
+            display: none;
+        }
+
+        .game-area.active {
+            display: block;
+        }
+
+        .camera-section {
+            position: relative;
+            margin: 20px 0;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 360px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .emoji-challenge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+            display: none;
+        }
+
+        .emoji-challenge.active {
+            display: block;
+        }
+
+        .emoji-display {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .emoji-instruction {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .emoji-timer {
+            font-size: 24px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .emoji-timer.success {
+            color: #28a745;
+        }
+
+        .typing-area {
+            margin: 20px 0;
+        }
+
+        .word-display {
+            font-size: 32px;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .current-word {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .typed-word {
+            color: #28a745;
+        }
+
+        .wrong-word {
+            color: #dc3545;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 20px;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            text-align: center;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .start-btn, .restart-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover, .restart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .results h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .final-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .final-stat {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info-box {
+            text-align: center;
+            padding: 10px;
+            background: #d1ecf1;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            color: #0c5460;
+        }
+
+        .detection-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Emoji Typing Challenge</h1>
+        <p class="subtitle">🐍 Powered by Python & OpenCV</p>
+        
+        <div class="mode-selection" id="modeSelection">
+            <button class="mode-btn" data-time="60">1 Minute</button>
+            <button class="mode-btn" data-time="180">3 Minutes</button>
+            <button class="mode-btn" data-time="600">10 Minutes</button>
+            <button class="mode-btn" id="customModeBtn">Custom</button>
+        </div>
+
+        <div class="custom-time hidden" id="customTimeInput">
+            <label>Minutes (1-10):</label>
+            <input type="number" id="customMinutes" min="1" max="10" value="5">
+            <button class="mode-btn" id="setCustomTime">Set</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">Time</div>
+                <div class="stat-value" id="timer">0:00</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">WPM</div>
+                <div class="stat-value" id="wpm">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Words</div>
+                <div class="stat-value" id="wordCount">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Accuracy</div>
+                <div class="stat-value" id="accuracy">100%</div>
+            </div>
+        </div>
+
+        <div class="info-box" id="infoBox">
+            💡 Emoji challenges appear randomly every 5-15 words | Using Python AI for accurate detection!
+        </div>
+
+        <button class="start-btn" id="startBtn">Start Challenge!</button>
+
+        <div class="game-area" id="gameArea">
+            <div class="camera-section">
+                <img src="/video_feed" class="camera-feed" id="cameraFeed">
+                <div class="detection-status" id="detectionStatus">Waiting...</div>
+                <div class="emoji-challenge" id="emojiChallenge">
+                    <div class="emoji-display" id="emojiDisplay">😀</div>
+                    <div class="emoji-instruction" id="emojiInstruction">Make this expression!</div>
+                    <div class="emoji-timer" id="emojiTimer">Detecting...</div>
+                </div>
+            </div>
+
+            <div class="typing-area">
+                <div class="word-display" id="wordDisplay">Start typing...</div>
+                <input type="text" id="typingInput" placeholder="Type here..." disabled>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎉 Challenge Complete!</h2>
+            <div class="final-stats">
+                <div class="final-stat">
+                    <div class="stat-label">Words Per Minute</div>
+                    <div class="stat-value" id="finalWpm">0</div>
+                </div>
+                <div class="final-stat">
+                    <div class="stat-label">Total Words</div>
+                    <div class="stat-value" id="finalWords">0</div>
+                </div>
+                <div class="final-stat">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="finalAccuracy">100%</div>
+                </div>
+                <div class="final-stat">
+                    <div class="stat-label">Emojis Done</div>
+                    <div class="stat-value" id="finalEmojis">0</div>
+                </div>
+            </div>
+            <button class="restart-btn" id="restartBtn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        
+        const words = [
+            'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'it',
+            'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this',
+            'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or',
+            'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what', 'so',
+            'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when',
+            'make', 'can', 'like', 'time', 'no', 'just', 'him', 'know', 'take', 'people',
+            'into', 'year', 'your', 'good', 'some', 'could', 'them', 'see', 'other', 'than',
+            'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also', 'back',
+            'after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even',
+            'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us', 'thing'
+        ];
+
+        const emojiList = ['😀', '😃', '😁', '😆', '😊', '😢', '😭', '😠', '😡', '😮', '😯', '😲', '😐', '😑', '😱', '😨'];
+
+        let selectedTime = 60;
+        let timeRemaining = 60;
+        let gameInterval = null;
+        let currentWord = '';
+        let wordsTyped = 0;
+        let correctWords = 0;
+        let incorrectWords = 0;
+        let emojisCompleted = 0;
+        let isInEmojiChallenge = false;
+        let emojiSchedule = [];
+        let totalEmojisNeeded = 0;
+        let correctDetections = 0;
+        const requiredDetections = 3;
+
+        // Elements
+        const modeButtons = document.querySelectorAll('.mode-btn[data-time]');
+        const customModeBtn = document.getElementById('customModeBtn');
+        const customTimeInput = document.getElementById('customTimeInput');
+        const customMinutes = document.getElementById('customMinutes');
+        const setCustomTime = document.getElementById('setCustomTime');
+        const startBtn = document.getElementById('startBtn');
+        const gameArea = document.getElementById('gameArea');
+        const emojiChallenge = document.getElementById('emojiChallenge');
+        const emojiDisplay = document.getElementById('emojiDisplay');
+        const emojiInstruction = document.getElementById('emojiInstruction');
+        const emojiTimer = document.getElementById('emojiTimer');
+        const wordDisplay = document.getElementById('wordDisplay');
+        const typingInput = document.getElementById('typingInput');
+        const results = document.getElementById('results');
+        const restartBtn = document.getElementById('restartBtn');
+        const detectionStatus = document.getElementById('detectionStatus');
+
+        // Socket.IO event handlers
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            detectionStatus.textContent = 'Connected';
+        });
+
+        socket.on('emotion_detected', (data) => {
+            if (isInEmojiChallenge) {
+                const detected = data.emotion;
+                const target = data.target;
+                
+                detectionStatus.textContent = `Detected: ${detected}`;
+                
+                if (detected === target) {
+                    correctDetections++;
+                    emojiTimer.textContent = `✓ ${correctDetections}/${requiredDetections}`;
+                    emojiTimer.classList.add('success');
+                    
+                    if (correctDetections >= requiredDetections) {
+                        socket.emit('stop_detection');
+                        emojiTimer.textContent = '✓ Success!';
+                        emojisCompleted++;
+                        
+                        setTimeout(() => {
+                            emojiChallenge.classList.remove('active');
+                            isInEmojiChallenge = false;
+                            correctDetections = 0;
+                            typingInput.disabled = false;
+                            typingInput.focus();
+                            detectionStatus.textContent = 'Typing...';
+                            nextWord();
+                        }, 500);
+                    }
+                } else {
+                    if (correctDetections > 0) {
+                        correctDetections = 0;
+                        emojiTimer.textContent = 'Keep trying...';
+                        emojiTimer.classList.remove('success');
+                    }
+                }
+            }
+        });
+
+        // Mode selection
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeButtons.forEach(b => b.classList.remove('active'));
+                customModeBtn.classList.remove('active');
+                btn.classList.add('active');
+                customTimeInput.classList.add('hidden');
+                selectedTime = parseInt(btn.dataset.time);
+            });
+        });
+
+        customModeBtn.addEventListener('click', () => {
+            modeButtons.forEach(b => b.classList.remove('active'));
+            customModeBtn.classList.add('active');
+            customTimeInput.classList.remove('hidden');
+        });
+
+        setCustomTime.addEventListener('click', () => {
+            const minutes = parseInt(customMinutes.value);
+            if (minutes >= 1 && minutes <= 10) {
+                selectedTime = minutes * 60;
+            }
+        });
+
+        // Generate random emoji schedule
+        function generateEmojiSchedule() {
+            const minutes = selectedTime / 60;
+            totalEmojisNeeded = Math.round(5 * minutes);
+            emojiSchedule = [];
+            
+            let wordCount = 0;
+            for (let i = 0; i < totalEmojisNeeded; i++) {
+                const interval = Math.floor(Math.random() * 11) + 5;
+                wordCount += interval;
+                emojiSchedule.push(wordCount);
+            }
+            
+            console.log(`Emoji schedule for ${minutes} min(s):`, emojiSchedule);
+        }
+
+        function shouldShowEmoji() {
+            return emojiSchedule.includes(correctWords);
+        }
+
+        // Start game
+        startBtn.addEventListener('click', () => {
+            startBtn.style.display = 'none';
+            document.getElementById('modeSelection').style.display = 'none';
+            customTimeInput.classList.add('hidden');
+            document.getElementById('infoBox').style.display = 'block';
+            gameArea.classList.add('active');
+            typingInput.disabled = false;
+            typingInput.focus();
+            
+            resetGame();
+            generateEmojiSchedule();
+            startGameTimer();
+            nextWord();
+            detectionStatus.textContent = 'Typing...';
+        });
+
+        function resetGame() {
+            timeRemaining = selectedTime;
+            wordsTyped = 0;
+            correctWords = 0;
+            incorrectWords = 0;
+            emojisCompleted = 0;
+            isInEmojiChallenge = false;
+            correctDetections = 0;
+            updateStats();
+        }
+
+        function startGameTimer() {
+            gameInterval = setInterval(() => {
+                timeRemaining--;
+                updateStats();
+                
+                if (timeRemaining <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateStats() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const elapsedMinutes = (selectedTime - timeRemaining) / 60;
+            const wpm = elapsedMinutes > 0 ? Math.round(correctWords / elapsedMinutes) : 0;
+            document.getElementById('wpm').textContent = wpm;
+            document.getElementById('wordCount').textContent = wordsTyped;
+            
+            const totalAttempts = correctWords + incorrectWords;
+            const accuracy = totalAttempts > 0 
+                ? Math.round((correctWords / totalAttempts) * 100) 
+                : 100;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function nextWord() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            wordDisplay.textContent = currentWord;
+            wordDisplay.className = 'word-display';
+            typingInput.value = '';
+        }
+
+        function showEmojiChallenge() {
+            isInEmojiChallenge = true;
+            correctDetections = 0;
+            const randomEmoji = emojiList[Math.floor(Math.random() * emojiList.length)];
+            emojiDisplay.textContent = randomEmoji;
+            emojiInstruction.textContent = 'Make this expression!';
+            emojiTimer.textContent = 'Detecting...';
+            emojiTimer.classList.remove('success');
+            emojiChallenge.classList.add('active');
+            typingInput.disabled = true;
+            detectionStatus.textContent = 'Detection active';
+            
+            socket.emit('start_detection', { emoji: randomEmoji });
+            
+            // Timeout after 15 seconds
+            setTimeout(() => {
+                if (isInEmojiChallenge) {
+                    socket.emit('stop_detection');
+                    emojiTimer.textContent = 'Time up!';
+                    
+                    setTimeout(() => {
+                        emojiChallenge.classList.remove('active');
+                        isInEmojiChallenge = false;
+                        correctDetections = 0;
+                        typingInput.disabled = false;
+                        typingInput.focus();
+                        detectionStatus.textContent = 'Typing...';
+                        nextWord();
+                    }, 1000);
+                }
+            }, 15000);
+        }
+
+        typingInput.addEventListener('input', (e) => {
+            if (isInEmojiChallenge) return;
+            
+            const typed = e.target.value.trim();
+            
+            if (typed === currentWord) {
+                wordDisplay.classList.add('typed-word');
+                correctWords++;
+                wordsTyped++;
+                updateStats();
+                
+                setTimeout(() => {
+                    if (shouldShowEmoji()) {
+                        showEmojiChallenge();
+                    } else {
+                        nextWord();
+                    }
+                }, 200);
+            } else if (currentWord.startsWith(typed)) {
+                wordDisplay.classList.remove('wrong-word');
+            } else {
+                wordDisplay.classList.add('wrong-word');
+            }
+        });
+
+        typingInput.addEventListener('keypress', (e) => {
+            if (e.key === ' ') {
+                e.preventDefault();
+                const typed = typingInput.value.trim();
+                
+                if (typed !== '' && typed !== currentWord) {
+                    incorrectWords++;
+                    wordsTyped++;
+                    updateStats();
+                    nextWord();
+                }
+            }
+        });
+
+        function endGame() {
+            clearInterval(gameInterval);
+            socket.emit('stop_detection');
+            
+            typingInput.disabled = true;
+            gameArea.classList.remove('active');
+            results.classList.add('active');
+            
+            const elapsedMinutes = selectedTime / 60;
+            const finalWpm = Math.round(correctWords / elapsedMinutes);
+            const totalAttempts = correctWords + incorrectWords;
+            const finalAccuracy = totalAttempts > 0 
+                ? Math.round((correctWords / totalAttempts) * 100) 
+                : 100;
+            
+            document.getElementById('finalWpm').textContent = finalWpm;
+            document.getElementById('finalWords').textContent = wordsTyped;
+            document.getElementById('finalAccuracy').textContent = finalAccuracy + '%';
+            document.getElementById('finalEmojis').textContent = `${emojisCompleted}/${totalEmojisNeeded}`;
+        }
+
+        restartBtn.addEventListener('click', () => {
+            results.classList.remove('active');
+            startBtn.style.display = 'block';
+            document.getElementById('modeSelection').style.display = 'flex';
+            document.getElementById('infoBox').style.display = 'none';
+            emojiChallenge.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+.no-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.no-content {
+  text-align: center;
+  animation: bounceIn 0.6s ease-out;
+}
+
+.no-content h1 {
+  font-size: 15rem;
+  font-weight: 900;
+  color: white;
+  margin: 0 0 40px 0;
+  text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: 20px;
+}
+
+.go-home-button {
+  display: inline-block;
+  padding: 20px 60px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  border: 3px solid white;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  backdrop-filter: blur(10px);
+}
+
+.go-home-button:hover {
+  background: white;
+  color: #e74c3c;
+  transform: scale(1.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .no-content h1 {
+    font-size: 8rem;
+    letter-spacing: 10px;
+  }
+
+  .go-home-button {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+  }
+}

@@ -1,0 +1,50 @@
+.currency-exchange-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.currency-hero {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  text-align: center;
+  padding: 80px 20px 40px;
+}
+
+.currency-hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.currency-hero p {
+  font-size: 1.4rem;
+  opacity: 0.95;
+}
+
+.exchange-content {
+  padding: 80px 20px;
+  text-align: center;
+  min-height: 400px;
+}
+
+.exchange-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #2ecc71;
+}
+
+.exchange-content p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .currency-hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .currency-hero p {
+    font-size: 1.1rem;
+  }
+}

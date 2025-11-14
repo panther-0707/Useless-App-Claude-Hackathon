@@ -3,6 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import HomePage from './pages/HomePage'
 import VolumePage from './pages/VolumePage'
+import CurrencyExchangePage from './pages/CurrencyExchangePage'
+import CryptocurrencyPage from './pages/CryptocurrencyPage'
+import TestTypingPage from './pages/TestTypingPage'
+import ContactPage from './pages/ContactPage'
+import NoPage from './pages/NoPage'
 import './App.css'
 
 function App() {
@@ -41,6 +46,11 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/volume" element={<VolumePage onVolumeChange={setVolume} />} />
+          <Route path="/currency-exchange" element={<CurrencyExchangePage />} />
+          <Route path="/cryptocurrency" element={<CryptocurrencyPage />} />
+          <Route path="/test-typing" element={<TestTypingPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/no" element={<NoPage />} />
         </Routes>
       </div>
     </Router>

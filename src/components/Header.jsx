@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Header.css'
 
 const Header = () => {
+  const [showServicesDropdown, setShowServicesDropdown] = useState(false)
+
   return (
     <header className="header">
       <div className="container">
@@ -12,15 +14,29 @@ const Header = () => {
             <span className="logo-text">Premier Bank</span>
           </Link>
           <nav className="nav">
-            <a href="#home" className="nav-link">Home</a>
-            <a href="#services" className="nav-link">Services</a>
-            <a href="#about" className="nav-link">About</a>
+            <Link to="/" className="nav-link">Home</Link>
+            <div 
+              className="nav-dropdown"
+              onMouseEnter={() => setShowServicesDropdown(true)}
+              onMouseLeave={() => setShowServicesDropdown(false)}
+            >
+              <a href="#services" className="nav-link">
+                Services ▾
+              </a>
+              {showServicesDropdown && (
+                <div className="dropdown-menu">
+                  <Link to="/test-typing" className="dropdown-item">⌨️ Test Your Typing</Link>
+                </div>
+              )}
+            </div>
+            <Link to="/currency-exchange" className="nav-link">Currency Exchange</Link>
+            <Link to="/cryptocurrency" className="nav-link">Cryptocurrency</Link>
             <Link to="/volume" className="nav-link">Volume</Link>
-            <a href="#contact" className="nav-link">Contact</a>
+            <Link to="/contact" className="nav-link">Contact</Link>
           </nav>
           <div className="header-actions">
-            <button className="btn-secondary">Sign In</button>
-            <button className="btn-primary">Open Account</button>
+            <Link to="/no" className="btn-secondary">Sign In</Link>
+            <Link to="/no" className="btn-primary">Open Account</Link>
           </div>
         </div>
       </div>
