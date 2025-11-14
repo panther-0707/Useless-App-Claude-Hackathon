@@ -1,5 +1,6 @@
 import React from 'react'
 import Footer from '../components/Footer'
+import RagebaitChat from '../components/RagebaitChat'
 import './ContactPage.css'
 
 const ContactPage = () => {
@@ -7,13 +8,16 @@ const ContactPage = () => {
     <div className="contact-page">
       <div className="contact-hero">
         <h1>📞 Contact Us</h1>
-        <p>Get in touch with our team</p>
+        <p>Get in touch with our AI-powered support</p>
       </div>
       
       <div className="container">
         <div className="contact-content">
-          <h2>Coming Soon!</h2>
-          <p>Our contact form is under development.</p>
+          <h2>Chat with Premier Bank AI</h2>
+          <p>Ask us anything about our services (or don't, we don't really care)</p>
+          <div className="chatbot-wrapper">
+            <RagebaitChat />
+          </div>
         </div>
       </div>
       

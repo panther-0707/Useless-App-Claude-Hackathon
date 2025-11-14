@@ -37,6 +37,12 @@
 .contact-content p {
   font-size: 1.2rem;
   color: #666;
+  margin-bottom: 40px;
+}
+
+.chatbot-wrapper {
+  margin-top: 40px;
+  margin-bottom: 60px;
 }
 
 @media (max-width: 768px) {

@@ -32,7 +32,7 @@ const Header = () => {
             <Link to="/currency-exchange" className="nav-link">Currency Exchange</Link>
             <Link to="/cryptocurrency" className="nav-link">Cryptocurrency</Link>
             <Link to="/volume" className="nav-link">Volume</Link>
-            <Link to="/contact" className="nav-link">Contact</Link>
+            <a href="http://localhost:5173/" target="_blank" rel="noopener noreferrer" className="nav-link">Contact</a>
           </nav>
           <div className="header-actions">
             <Link to="/no" className="btn-secondary">Sign In</Link>
