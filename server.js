@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
 
 dotenv.config();
-console.log("Loaded key:", process.env.ANTHROPIC_API_KEY);
 
 const app = express();
 app.use(express.json());
